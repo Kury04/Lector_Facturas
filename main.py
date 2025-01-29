@@ -26,9 +26,12 @@ if palabras_clave:
     
     # Buscar y procesar archivos PDF
     archivos_pdf = buscar_pdfs_en_carpeta(carpeta)
+    archivos_txt_generados = []  # Lista para almacenar los archivos TXT generados
+
     for ruta_pdf in archivos_pdf:
         nombre_txt = os.path.basename(ruta_pdf).replace('.pdf', '.txt')
         ruta_txt = os.path.join(carpeta, nombre_txt)
+        archivos_txt_generados.append(ruta_txt)  # Guardar la ruta del archivo TXT
 
         # Extraer texto del PDF y guardarlo en un archivo TXT
         texto_pdf = extraer_texto_pdf(ruta_pdf, ruta_txt)
@@ -40,18 +43,23 @@ if palabras_clave:
                 texto_txt = archivo_txt.read()
 
             # Validar si el archivo TXT contiene algún proveedor extranjero
-            proveedor_encontrado = any(proveedor in texto_txt for proveedor in proveedores)
-            
-            # Eliminar el archivo TXT si no contiene un proveedor extranjero
-            if not proveedor_encontrado:
-                os.remove(ruta_txt)
-                print(f"El archivo TXT {ruta_txt} ha sido eliminado porque no contiene proveedores extranjeros")
-            else:
+            proveedor_encontrado = False
+            for proveedor in proveedores:
+                if proveedor in texto_txt:
+                    proveedor_encontrado = True
+                    print(f"Proveedor encontrado: {proveedor}")
+                    break
+
                 # Buscar palabras clave en el archivo TXT
                 resultados = extraer_valores(ruta_txt, palabras_clave)
                 resultados["Archivo"] = os.path.basename(ruta_txt)  # Agregar el nombre del archivo
                 datos_palabras.append(resultados)  # Guardar en la lista acumulativa
 
+                # Imprimir resultados - Depuración
+                print(f"\nResultados para {os.path.basename(ruta_pdf)}:")
+                for palabra, valor in resultados.items():
+                    print(f"  {palabra}: {valor}")
+                    
                 # Verificar palabras clave específicas
                 palabras_verificar = ["USD", "DOB001109DK5"]
                 booleans = verificar_palabras_clave(ruta_txt, palabras_verificar)
@@ -59,6 +67,14 @@ if palabras_clave:
                 for palabra, encontrado in booleans.items():
                     print(f"  {palabra}: {True if encontrado else False}")
 
+# Eliminar todos los archivos TXT generados
+for ruta_txt in archivos_txt_generados:
+    try:
+        os.remove(ruta_txt)
+        print(f"Archivo TXT eliminado: {ruta_txt}")  # Depuración
+    except Exception as e:
+        print(f"Error al eliminar el archivo TXT {ruta_txt}: {e}")  # Depuración
+        
 # Exportar a Excel si hay datos
 if datos_facturas or datos_palabras:
     crear_excel(datos_facturas, datos_palabras, ruta_excel)
