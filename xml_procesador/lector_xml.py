@@ -24,17 +24,3 @@ def leer_xml(ruta_xml):
         "total_impuestos": impuestos.get('@TotalImpuestosTrasladados', 'N/A'),
         "uuid": complemento.get('tfd:TimbreFiscalDigital', {}).get('@UUID', 'N/A'),
     }
-
-# import xml.etree.ElementTree as ET
-
-# def leer_xml(ruta_xml):
-#     try:
-#         tree = ET.parse(ruta_xml)
-#         root = tree.getroot()
-#         datos = {}
-#         for elem in root.iter():
-#             datos[elem.tag] = elem.text
-#         return datos
-#     except Exception as e:
-#         print(f"Error al leer el archivo XML {ruta_xml}: {e}")
-#         return {}
