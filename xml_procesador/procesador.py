@@ -8,7 +8,7 @@ def procesar_cfdis(carpeta):
     
     if not archivos_xml:
         print(f"No se encontraron archivos XML en la carpeta: {carpeta}")
-        return []  # Retorna lista vacía si no hay archivos
+        return []
 
     datos_facturas = []
 
@@ -21,3 +21,4 @@ def procesar_cfdis(carpeta):
             print(f"Error al procesar el archivo {ruta_xml}: {e}")
 
     return datos_facturas  # Retorna la lista de datos procesados
+
