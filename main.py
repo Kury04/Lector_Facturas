@@ -22,58 +22,63 @@ datos_palabras = []
 
 # Procesar archivos en la carpeta
 if palabras_clave:
-    archivos_en_carpeta = os.listdir(carpeta)
-    
-    # Buscar y procesar archivos PDF
     archivos_pdf = buscar_pdfs_en_carpeta(carpeta)
-    archivos_txt_generados = []  # Lista para almacenar los archivos TXT generadosz
+    archivos_txt_generados = []
 
     for ruta_pdf in archivos_pdf:
         nombre_txt = os.path.basename(ruta_pdf).replace('.pdf', '.txt')
         ruta_txt = os.path.join(carpeta, nombre_txt)
-        archivos_txt_generados.append(ruta_txt)  # Guardar la ruta del archivo TXT
+        archivos_txt_generados.append(ruta_txt)
 
-        # Extraer texto del PDF y guardarlo en un archivo TXT
         texto_pdf = extraer_texto_pdf(ruta_pdf, ruta_txt)
         if texto_pdf:
             print(f"Archivo PDF convertido a TXT: {ruta_txt}")
 
-            # Leer el archivo TXT
             with open(ruta_txt, 'r') as archivo_txt:
                 texto_txt = archivo_txt.read()
 
-            # Validar si el archivo TXT contiene algún proveedor extranjero
-            proveedor_encontrado = False
-            for proveedor in proveedores:
-                if proveedor in texto_txt:
-                    proveedor_encontrado = True
-                    print(f"Proveedor encontrado: {proveedor}")
-                    break
+            # Buscar si el texto contiene un proveedor extranjero
+            proveedor_encontrado_str = next((prov for prov in proveedores if prov in texto_txt), None)
 
-                # Buscar palabras clave en el archivo TXT
-                resultados = extraer_valores(ruta_txt, palabras_clave)
-                resultados["Archivo"] = os.path.basename(ruta_txt)  # Agregar el nombre del archivo
-                datos_palabras.append(resultados)  # Guardar en la lista acumulativa
+            if proveedor_encontrado_str:
+                print(f"Proveedor encontrado: {proveedor_encontrado_str}")
 
-                # Imprimir resultados - Depuración
-                print(f"\nResultados para {os.path.basename(ruta_pdf)}:")
-                for palabra, valor in resultados.items():
-                    print(f"  {palabra}: {valor}")
-                    
-                # Verificar palabras clave específicas
-                palabras_verificar = ["USD", "DOB001109DK5"]
-                booleans = verificar_palabras_clave(ruta_txt, palabras_verificar)
-                print(f"Resultados para {os.path.basename(ruta_pdf)}:")
-                for palabra, encontrado in booleans.items():
-                    print(f"  {palabra}: {True if encontrado else False}")
+                # Definir rangos para cada proveedor
+                rangos_proveedores = {
+                    "Laredo, TX": (1, 5),
+                    "SOLUTRANS LOGISTICS S,A": (7, 11),
+                    "SAMSUNG SDS AMERICA, INC.": (13, 16),
+                    "C.H. Robinson": (18, 24)
+                }
 
-# # Eliminar todos los archivos TXT generados
-# for ruta_txt in archivos_txt_generados:
-#     try:
-#         os.remove(ruta_txt)
-#         print(f"Archivo TXT eliminado: {ruta_txt}")  # Depuración
-#     except Exception as e:
-#         print(f"Error al eliminar el archivo TXT {ruta_txt}: {e}")  # Depuración
+                if proveedor_encontrado_str in rangos_proveedores:
+                    rango_busqueda = rangos_proveedores[proveedor_encontrado_str]
+                    resultados = extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado_str, rango= rango_busqueda)
+
+                    if resultados:
+                        resultados["Archivo"] = os.path.basename(ruta_txt)
+                        datos_palabras.append(resultados)
+
+                        # Depuración: Mostrar resultados
+                        print(f"\nResultados para {os.path.basename(ruta_pdf)}:")
+                        for palabra, valor in resultados.items():
+                            print(f"  {palabra}: {valor}")
+
+                        # Verificar palabras clave
+                        palabras_verificar = ["USD", "DOB001109DK5"]
+                        booleans = verificar_palabras_clave(ruta_txt, palabras_verificar)
+                        print(f"Resultados de verificación para {os.path.basename(ruta_pdf)}:")
+                        for palabra, encontrado in booleans.items():
+                            print(f"  {palabra}: {True if encontrado else False}")
+
+
+ # Eliminar todos los archivos TXT generados
+for ruta_txt in archivos_txt_generados:
+    try:
+        os.remove(ruta_txt)
+        print(f"Archivo TXT eliminado: {ruta_txt}")  # Depuración
+    except Exception as e:
+        print(f"Error al eliminar el archivo TXT {ruta_txt}: {e}")  # Depuración
         
 # Exportar a Excel si hay datos
 if datos_facturas or datos_palabras:
