@@ -1,7 +1,7 @@
 import re
 
 def extraer_valores(ruta_txt, palabras_clave):
-    """Extrae el primer valor asociado a cada palabra clave desde un archivo de texto, validando que sea un número si es necesario."""
+    """Extrae el primer valor asociado a cada palabra clave desde un archivo de texto"""
     try:
         with open(ruta_txt, 'r') as archivo:
             lineas = archivo.readlines()
@@ -16,15 +16,21 @@ def extraer_valores(ruta_txt, palabras_clave):
                     coincidencia = re.search(patron, linea, re.IGNORECASE)
                     if coincidencia:
                         valor = coincidencia.group(1).strip()
-                        # Validar si el valor es un número entero
-                        if palabra.lower() == "invoice":
-                            resultados[palabra] = valor if valor.isdigit() else "False"
-                        elif palabra.lower() in ["total", "currency", "amount due", "due", "total amount"]:
-                            resultados[palabra] = valor.lstrip('$').strip()
-                        else:
-                            resultados[palabra] = valor
-                        encontrado = True
-                        break  # Detener búsqueda después de encontrar el primer resultado
+                        
+                        # # Validar si el valor es un número entero
+                        # if palabra.lower() == "invoice":
+                        #     resultados[palabra] = valor if valor.isdigit() else "False"
+                        # elif palabra.lower() in ["total", "currency", "amount due", "due", "total amount"]:
+                        #     valor_limpio = valor.lstrip('$').strip()
+                        #     try:
+                        #         float(valor_limpio)  # Intenta convertir a float
+                        #         resultados[palabra] = valor_limpio
+                        #     except ValueError:
+                        #         resultados[palabra] = "False"
+                        # else:
+                        #     resultados[palabra] = valor
+                        # encontrado = True
+                        # break  # Detener búsqueda después de encontrar el primer resultado
 
             if not encontrado:
                 resultados[palabra] = "False"  # No se encontró la palabra clave

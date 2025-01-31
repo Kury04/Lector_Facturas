@@ -1,17 +1,23 @@
+------ Uber, Laredo, TX -------
 Tax ID
-Numero Interno
 Invoice
-Invoice No
-Invoice Number
-Fecha
 Date
-PPD
-Moneda
 USD
-Currency
-Total
-Amount Due
 Due
-Total Amount
-DOB001109DK5
+------ Solutrans -------
 Cedula Juridica
+Numero Interno
+Fecha
+Moneda
+Total
+------- SAMSUNG --------
+Invoice No
+Date
+Currency
+Total Amount
+------ C.H. Robinson ------
+Invoice Number
+Invoice Date
+Amount Due
+USD
+Tax ID

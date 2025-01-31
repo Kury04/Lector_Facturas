@@ -21,12 +21,12 @@ def crear_excel(datos_facturas, datos_palabras, ruta_excel):
             # Hoja 1: Datos de Facturas XML
             if datos_facturas:
                 df_facturas = pd.DataFrame(datos_facturas)
-                df_facturas.to_excel(writer, sheet_name="Datos Facturas", index=False)
+                df_facturas.to_excel(writer, sheet_name="FF", index=False)
             
             # Hoja 2: Palabras Clave en TXT
             if datos_palabras:
                 df_palabras = pd.DataFrame(datos_palabras)
-                df_palabras.to_excel(writer, sheet_name="Palabras Clave", index=False)
+                df_palabras.to_excel(writer, sheet_name="FX", index=False)
 
         print(f"Datos exportados correctamente a {ruta_excel}")
 

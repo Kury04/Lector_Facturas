@@ -26,7 +26,7 @@ if palabras_clave:
     
     # Buscar y procesar archivos PDF
     archivos_pdf = buscar_pdfs_en_carpeta(carpeta)
-    archivos_txt_generados = []  # Lista para almacenar los archivos TXT generados
+    archivos_txt_generados = []  # Lista para almacenar los archivos TXT generadosz
 
     for ruta_pdf in archivos_pdf:
         nombre_txt = os.path.basename(ruta_pdf).replace('.pdf', '.txt')
@@ -67,13 +67,13 @@ if palabras_clave:
                 for palabra, encontrado in booleans.items():
                     print(f"  {palabra}: {True if encontrado else False}")
 
-# Eliminar todos los archivos TXT generados
-for ruta_txt in archivos_txt_generados:
-    try:
-        os.remove(ruta_txt)
-        print(f"Archivo TXT eliminado: {ruta_txt}")  # Depuración
-    except Exception as e:
-        print(f"Error al eliminar el archivo TXT {ruta_txt}: {e}")  # Depuración
+# # Eliminar todos los archivos TXT generados
+# for ruta_txt in archivos_txt_generados:
+#     try:
+#         os.remove(ruta_txt)
+#         print(f"Archivo TXT eliminado: {ruta_txt}")  # Depuración
+#     except Exception as e:
+#         print(f"Error al eliminar el archivo TXT {ruta_txt}: {e}")  # Depuración
         
 # Exportar a Excel si hay datos
 if datos_facturas or datos_palabras:
