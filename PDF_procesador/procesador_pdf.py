@@ -6,7 +6,7 @@ import re
 
 def buscar_pdfs_en_carpeta(carpeta):
     """Busca todos los archivos PDF en una carpeta y subcarpetas."""
-    archivos_pdf = glob.glob(f"{carpeta}/**/*.pdf", recursive=True)
+    archivos_pdf = glob.glob((f"{carpeta}/**/*.pdf"), recursive=True)
     if not archivos_pdf:
         print(f"No se encontraron archivos PDF en {carpeta}")
     else:

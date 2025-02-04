@@ -1,4 +1,5 @@
 import re
+import os
 
 def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango=(3, 6)):
     """Extrae valores clave de un archivo TXT según el proveedor y el rango asignado en atributos.txt."""
@@ -15,11 +16,11 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango=(3, 6)
 
         resultados = {
             "Nombre proveedor": proveedor_encontrado,
-            "TAX ID": "False",
-            "Invoice": "False",
-            "Fecha": "False",
-            "Moneda": "False",
-            "Total": "False"
+            "TAX ID": "N/A",
+            "Invoice": "N/A",
+            "Fecha": "N/A",
+            "Moneda": "USD",
+            "Total": "N/A"
         }
 
         # Definir reglas para cada campo
@@ -27,7 +28,7 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango=(3, 6)
             "TAX ID": ["tax id", "cedula juridica"],
             "Invoice": ["invoice", "invoice no", "invoice number", "numero interno"],
             "Fecha": ["date", "fecha", "invoice date"],
-            "Moneda": ["moneda", "currency", "usd"],
+            "Moneda": ["moneda", "currency"],
             "Total": ["due", "total", "total amount", "amount due"]
         }
 
@@ -52,21 +53,12 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango=(3, 6)
                         # Validar si el valor es un número entero o un monto
                         if palabra.lower() == "invoice":
                             resultados[palabra] = valor if valor.isdigit() else "False"
-                        elif palabra.lower() in ["total", "currency", "amount due", "due", "total amount"]:
+                        elif palabra.lower() in ["Total", "Amount due", "Due", "Total Amount"]:
                             valor_limpio = valor.lstrip('$').strip()
-                            try:
-                                float(valor_limpio)
-                                resultados[palabra] = valor_limpio
-                            except ValueError:
-                                resultados[palabra] = "False"
                         else:
                             resultados[palabra] = valor
-
-                        encontrado = True  # Se encontró al menos una coincidencia
                         break  # Solo toma la primera coincidencia
 
-            if not encontrado:
-                resultados[palabra] = "False"
 
         return resultados
     except Exception as e:
@@ -75,14 +67,22 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango=(3, 6)
 
 
 
-def verificar_palabras_clave(ruta_txt, palabras_verificar):
+def verificar_palabras_clave(ruta_txt, ruta_pdf, palabras_verificar):
     """Verifica si las palabras clave específicas están presentes en el texto."""
     try:
         with open(ruta_txt, 'r') as archivo:
             contenido = archivo.read()
+
+        #Verificar palabras clave
+        palabras_verificar = ["USD", "DOB001109DK5"]
+        booleans = verificar_palabras_clave(ruta_txt, palabras_verificar)
+        print(f"Resultados de verificación para {os.path.basename(ruta_pdf)}:")
+        for palabra, encontrado in booleans.items():
+            print(f"  {palabra}: {True if encontrado else False}")
 
         resultados = {palabra: palabra in contenido for palabra in palabras_verificar}
         return resultados
     except Exception as e:
         print(f"Error al verificar palabras clave: {e}")
         return {}
+

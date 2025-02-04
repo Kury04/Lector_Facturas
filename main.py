@@ -64,12 +64,12 @@ if palabras_clave:
                         for palabra, valor in resultados.items():
                             print(f"  {palabra}: {valor}")
 
-                        # Verificar palabras clave
-                        palabras_verificar = ["USD", "DOB001109DK5"]
-                        booleans = verificar_palabras_clave(ruta_txt, palabras_verificar)
-                        print(f"Resultados de verificación para {os.path.basename(ruta_pdf)}:")
-                        for palabra, encontrado in booleans.items():
-                            print(f"  {palabra}: {True if encontrado else False}")
+                        # # Verificar palabras clave
+                        # palabras_verificar = ["USD", "DOB001109DK5"]
+                        # booleans = verificar_palabras_clave(ruta_txt, palabras_verificar)
+                        # print(f"Resultados de verificación para {os.path.basename(ruta_pdf)}:")
+                        # for palabra, encontrado in booleans.items():
+                        #     print(f"  {palabra}: {True if encontrado else False}")
 
 
  # Eliminar todos los archivos TXT generados
@@ -80,7 +80,7 @@ for ruta_txt in archivos_txt_generados:
     except Exception as e:
         print(f"Error al eliminar el archivo TXT {ruta_txt}: {e}")  # Depuración
         
-# Exportar a Excel si hay datos
+# Exportar a Excel si hay datos 
 if datos_facturas or datos_palabras:
     crear_excel(datos_facturas, datos_palabras, ruta_excel)
     print(f"Excel exportado en {ruta_excel}")

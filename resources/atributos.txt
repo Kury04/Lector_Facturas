@@ -20,5 +20,4 @@ Total Amount
 Tax ID
 Invoice Number
 Invoice Date
-USD
 Amount Due

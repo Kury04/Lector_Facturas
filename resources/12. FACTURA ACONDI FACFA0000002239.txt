@@ -1,0 +1,27 @@
+HUC TODO EN MERCANCIAS PELIGROSAS Factura HTM2104222N9
+Serie - Folio: FA 2239 Av. Ferrocarril Industrial 163 DEL. Venustiano Carranza Fecha y Hora: 22/Ene/2024 - 13:21:32
+Ciudad de México C.P. 15530 Tipo de Comprobante: I - Ingreso Lugar de expedición 15530
+(C.P.): Cliente: DOBOS Uso CFDI: G03-Gastos en general
+RFC:DOB001109DK5 Domicilio: AV. INSURGENTES SUR 1853-PLANTA BAJA Guadalupe Inn, Álvaro Obregón, Ciudad de México, México C.P.01020
+Mail: Angelica Aleman Contacto: aaleman@alfaparf.com Referencia: CHILE #3
+CantidadClave Unidad Descripción Valor unitario I.V.A. Retencion Importe SAT
+1 E48 ELABORACION DE DGD MARITIMO $1,900.00 $304.00 $0.00 $1,900.00 - 80151600
+Importe con letra: DOS MIL DOSCIENTOS CUATRO PESOS 00/100 M.N. Subtotal: 1,900.00
+Descuentos: 0.00 Condiciones de Pago: I.V.A: 304.00
+Método de Pago: PPD - Pago en parcialidades o diferido Retencion I.S.R: 0.00
+Forma de Pago: 99 - Por definir Retencion I.V.A: 0.00
+Moneda: MXN - Peso Mexicano Tipo de Cambio:
+Total: $2,204.00 Tipo Relación: -
+CFDI Relacionado: Este documento es una representación impresa de un CFDI
+Firma de conformidad Clave de Confirmacion del PAC:
+Serie del Certificado del emisor: 00001000000507821878 Folio Fiscal: 5B55D32D-FD13-446A-BBC1-28CB3FE1F510
+No. de serie del Certificado del SAT: 00001000000505142236 Fecha y hora de certificación: 2024-01-22T13:21:38
+Gracias por realizar su pago en BanBajio Cuenta 324001370201 Clabe interbancaria 030180900026635274
+BBVA: 0117179162 Clabe: 012180001171791621 enviar comprobante de pago a: veronica.perez@huc.mx
+Sello digital del CFDI PcVyTzX+oLvRXhe9+lQkwpfw+wAyomtBrhjRmo8+EAj5h/cfgHca6MKTXWXOIQ73QZe0qpP2SuBtI+NDV4+1+k1dG1zURHeSDXXoy0cquBFdeN5QO06L8ANmxn4Dn7R6GugV680QF3PKmi1+
+ndRj3AXE34fiCxA5TQSwFiZViJFYxS+7c9xh6sUdTCdOrkum3JggZdMAjnaw//TseOvtcC7TXlBbSO4kD3bRUxqC+kEOKmEu2sJ6vmlUWxm7B8WkgLydT769ax0bOT4HOxnKIqyt2FMKPqwm jlxHZ2D6FkNrBxkleYZgJRdFPbSUGiQMryQWEXxn683mxMXg5JL0sg==
+Sello del SAT Vz5hCNfqWa2h+GQBJDkIWBIle5TT/ODh2sO0wRGnLy+4u4h0o18eg3HsdiJzUGeSChMm91nJ4n6+IHPcp4uDJ2odfeZyDZ83FWRm54H/WXvg4oPo+AJDPlDalvuafF/1k6Q/DNVn/W3v5JxYEW
+muCdd8qPYnknUD5sqUno8mWDcAYzJ+YtzFYK3Ebwk/OifjwHhYFeiAhjZ3gFUjnrNaIbjrP9rma9mQ/WAmUzHKAFUi4s0M7BBj0g+hOthmw/woc0Ex47FFVBbscNzPJ8f6i+s9JiUtTV8Y9omi e6xFke36EUDLm5dh+T7CWZYWHvUBBJv4dnqE7t/UIQV9TC4yUQ==
+Cadena original del complemento del certificación digital del SAT ||1.1|5B55D32D-FD13-446A-BBC1-28CB3FE1F510|2024-01-22T13:21:38|MAS0810247C0|PcVyTzX+oLvRXhe9+lQkwpfw+wAyomtBrhjRmo8+EAj5h/cfgHca6MKTXWXOIQ73QZe0qpP
+2SuBtI+NDV4+1+k1dG1zURHeSDXXoy0cquBFdeN5QO06L8ANmxn4Dn7R6GugV680QF3PKmi1+ndRj3AXE34fiCxA5TQSwFiZViJFYxS+7c9xh6sUdTCdOrkum3JggZdMAjnaw//TseOvtcC7TXl BbSO4kD3bRUxqC+kEOKmEu2sJ6vmlUWxm7B8WkgLydT769ax0bOT4HOxnKIqyt2FMKPqwmjlxHZ2D6FkNrBxkleYZgJRdFPbSUGiQMryQWEXxn683mxMXg5JL0sg==|00001000000505142236 ||
+Régimen Fiscal:626 - Régimen Simplificado de Confianza Versión del comprobante: 4.0
