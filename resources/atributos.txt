@@ -11,13 +11,14 @@ Fecha
 Moneda
 Total
 ------- SAMSUNG --------
+Tax ID
 Invoice No
 Date
 Currency
 Total Amount
 ------ C.H. Robinson ------
+Tax ID
 Invoice Number
 Invoice Date
-Amount Due
 USD
-Tax ID
+Amount Due
