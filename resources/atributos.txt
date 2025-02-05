@@ -1,9 +1,8 @@
------- Uber, Laredo, TX -------
+------ C.H. Robinson ------
 Tax ID
-Invoice
-Date
-USD
-Due
+Invoice Number
+Invoice Date
+Amount Due
 ------ Solutrans -------
 Cedula Juridica
 Numero Interno
@@ -16,8 +15,9 @@ Invoice No
 Date
 Currency
 Total Amount
------- C.H. Robinson ------
+------ Uber, Laredo, TX -------
 Tax ID
-Invoice Number
-Invoice Date
-Amount Due
+Invoice
+Date
+USD
+Due

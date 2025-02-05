@@ -17,10 +17,10 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango=(3, 6)
         resultados = {
             "Nombre proveedor": proveedor_encontrado,
             "TAX ID": "N/A",
-            "Invoice": "N/A",
-            "Fecha": "N/A",
+            "Invoice": "Error[Invoice]",
+            "Fecha": "Error[Fecha]",
             "Moneda": "USD",
-            "Total": "N/A"
+            "Total": "Error[Total]"
         }
 
         # Definir reglas para cada campo
