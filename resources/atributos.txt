@@ -15,9 +15,9 @@ Invoice No
 Date
 Currency
 Total Amount
------- Uber, Laredo, TX -------
+------ Uber, Transplace Mexico LLC -------
 Tax ID
 Invoice
-Date
+Due Date
 USD
 Due

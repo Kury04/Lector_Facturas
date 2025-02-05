@@ -7,3 +7,4 @@ def leer_archivo(ruta):
     except Exception as e:
         print(f"Error al leer el archivo {ruta}: {e}")
         return []
+    

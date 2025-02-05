@@ -27,17 +27,19 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango=(3, 6)
         mapeo_palabras = {
             "TAX ID": ["tax id", "cedula juridica"],
             "Invoice": ["invoice", "invoice no", "invoice number", "numero interno"],
-            "Fecha": ["date", "fecha", "invoice date"],
+            "Fecha": ["date", "fecha", "invoice date", "due date"],
             "Moneda": ["moneda", "currency"],
-            "Total": ["due", "total", "total amount", "amount due"]
+            "Total": ["due", "Recibido Conforme total", "total amount", "amount due"]
         }
+
+
 
         for palabra in palabras_clave:
             encontrado = False  # Inicializar antes del loop
 
             for linea in lineas_txt:
                 if palabra.lower() in linea.lower():
-                    patron = rf"{palabra}.*?[.:]?\s*(\S+)"
+                    patron = rf"{palabra}.*?[.:$]?\s*(\S+)"
                     coincidencia = re.search(patron, linea, re.IGNORECASE)
                     if coincidencia:
                         valor = coincidencia.group(1).strip()
@@ -53,14 +55,20 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango=(3, 6)
                         # Validar si el valor es un número entero o un monto
                         if palabra.lower() == "invoice":
                             resultados[palabra] = valor if valor.isdigit() else "False"
-                        elif palabra.lower() in ["Total", "Amount due", "Due", "Total Amount"]:
+                        elif palabra.lower() in ["Recibido Conforme Total", "Amount due", "Due", "Total Amount"]:
                             valor_limpio = valor.lstrip('$').strip()
+                            try:
+                                float(valor_limpio)  # Intenta convertir a float
+                                resultados[palabra] = valor_limpio
+                            except ValueError:
+                                resultados[palabra] = "False"
                         else:
                             resultados[palabra] = valor
-                        break  # Solo toma la primera coincidencia
-
-
+                        encontrado = True
+                        break
         return resultados
+    #Como hago para que si encuentra la primera coincidencia y es false pase a la que sigue hasta que encuentre con un valor
+
     except Exception as e:
         print(f"Error al procesar {ruta_txt}: {e}")
         return {}
@@ -85,4 +93,3 @@ def verificar_palabras_clave(ruta_txt, ruta_pdf, palabras_verificar):
     except Exception as e:
         print(f"Error al verificar palabras clave: {e}")
         return {}
-
