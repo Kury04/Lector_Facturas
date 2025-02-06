@@ -28,6 +28,7 @@ def procesar_documentos(carpeta, progress_bar):
             print(f"Error al procesar el archivo {ruta_xml}: {e}")
 
     datos_palabras = []
+    
 
     # Procesar archivos PDF si hay palabras clave
     if palabras_clave:
@@ -49,7 +50,7 @@ def procesar_documentos(carpeta, progress_bar):
                             "C.H. Robinson": (1, 5),
                             "SOLUTRANS LOGISTICS S,A": (7, 11),
                             "SAMSUNG SDS AMERICA, INC.": (13, 16),
-                            "Transplace Mexico LLC": (18, 24)
+                            "Transplace Mexico LLC": (18, 22)
                         }
 
                         if proveedor in rangos:
@@ -64,7 +65,7 @@ def procesar_documentos(carpeta, progress_bar):
         # Eliminar archivos temporales .txt
         for ruta_txt in [os.path.join(carpeta, f) for f in os.listdir(carpeta) if f.endswith('.txt')]:
             os.remove(ruta_txt)
-
+        
     # Exportar resultados a Excel
     if datos_facturas or datos_palabras:
         crear_excel(datos_facturas, datos_palabras, ruta_excel)

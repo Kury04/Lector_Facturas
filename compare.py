@@ -21,39 +21,21 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango):
             "Moneda": "USD",
             "Total": "Error[Total]"
         }
+        
 
-        # Mapeo de palabras clave
-        mapeo_palabras = {
-            "TAX ID": ["tax id", "cedula juridica"],
-            "Invoice": ["invoice", "invoice no", "invoice number", "numero interno"],
-            "Fecha": ["date", "fecha", "invoice date", "due date"],
-            "Moneda": ["moneda", "currency"]
-        }
-
-        # Expresión regular para extraer el "Total" (segundo código)
+        # 🔹 Expresión regular mejorada para detectar el Total
         patron_total = re.compile(r"(?i)(Total Charges in USDs Due|Recibido Conforme Total|Total Amount|Amount Due)[^\d$]*([$]?\s*[\d,]+\.\d{2})")
 
-        # Buscar en todas las líneas el "Total"
+        # 🔍 Buscar en todas las líneas sin depender de palabras clave
         for linea in lineas_txt:
             coincidencia_total = patron_total.search(linea)
             if coincidencia_total:
+                print(f"🔍 Línea detectada con total: {linea.strip()}")  # DEPURACIÓN
+                print(f"✅ Coincidencia extraída: {coincidencia_total.groups()}")  # DEPURACIÓN
+
                 valor_total = coincidencia_total.group(2).replace(',', '').strip()
                 resultados["Total"] = valor_total.lstrip('$')  # Remueve el signo de dólar si existe
                 break  # No seguir buscando después de encontrar el total
-
-        # Buscar otros valores según palabras clave (primer código)
-        for palabra in palabras_clave:
-            for linea in lineas_txt:
-                if palabra.lower() in linea.lower():
-                    patron = rf"{palabra}.*?[.:$]?\s*(\S+)"
-                    coincidencia = re.search(patron, linea, re.IGNORECASE)
-                    if coincidencia:
-                        valor = coincidencia.group(1).strip()
-                        for columna, palabras in mapeo_palabras.items():
-                            if palabra.lower() in palabras:
-                                resultados[columna] = valor
-                                break  # Se encontró el valor, no seguir buscando
-                        break  # Pasar a la siguiente palabra clave
 
         return resultados
 
