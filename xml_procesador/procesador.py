@@ -1,5 +1,6 @@
 import os
 import glob
+import pandas as pd
 from tkinter import messagebox
 from .lector_xml import leer_xml, asignar_ids
 from PDF_procesador.file_utils import buscar_pdfs_en_carpeta
@@ -28,7 +29,6 @@ def procesar_documentos(carpeta, progress_bar):
             print(f"Error al procesar el archivo {ruta_xml}: {e}")
 
     datos_palabras = []
-    
 
     # Procesar archivos PDF si hay palabras clave
     if palabras_clave:
@@ -58,17 +58,25 @@ def procesar_documentos(carpeta, progress_bar):
                             if resultados:
                                 resultados["Archivo"] = os.path.basename(ruta_txt)
                                 datos_palabras.append(resultados)
+                        print(resultados)
                         break
-
+                        
             progress_bar.set(i / total_archivos)
 
         # Eliminar archivos temporales .txt
         for ruta_txt in [os.path.join(carpeta, f) for f in os.listdir(carpeta) if f.endswith('.txt')]:
             os.remove(ruta_txt)
-        
-    # Exportar resultados a Excel
-    if datos_facturas or datos_palabras:
-        crear_excel(datos_facturas, datos_palabras, ruta_excel)
-        messagebox.showinfo("Éxito", f"Datos exportados a {ruta_excel}")
-    else:
-        messagebox.showwarning("Atención", "No se encontraron datos para exportar.")
+
+    # Convertir datos en DataFrames
+    df_facturas = pd.DataFrame(datos_facturas)
+    df_palabras = pd.DataFrame(datos_palabras)
+
+    # Devolver los DataFrames
+    return df_facturas, df_palabras
+
+    # # Exportar resultados a Excel
+    # if datos_facturas or datos_palabras:
+    #     crear_excel(datos_facturas, datos_palabras, ruta_excel)
+    #     messagebox.showinfo("Éxito", f"Datos exportados a {ruta_excel}")
+    # else:
+    #     messagebox.showwarning("Atención", "No se encontraron datos para exportar.")
