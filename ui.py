@@ -20,6 +20,7 @@ def iniciar_proceso(entrada, progress_bar):
     progress_bar.set(1)
     messagebox.showinfo("Éxito", f"Procesamiento completado en {carpeta}")
 
+
 def iniciar_interfaz():
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("blue")

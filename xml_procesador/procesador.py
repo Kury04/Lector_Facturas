@@ -9,7 +9,7 @@ from PDF_procesador.keyword_extractor import extraer_valores
 from xml_procesador.exportar_excel import crear_excel
 from utils.archivos import leer_archivo
 
-def procesar_documentos(carpeta, progress_bar):
+def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
     ruta_atributos = "resources/atributos.txt"
     archivo_proveedores = "resources/proveedores_extranjeros.txt"
     ruta_excel = os.path.join(carpeta, "Datos Facturas.xlsx")
@@ -47,9 +47,9 @@ def procesar_documentos(carpeta, progress_bar):
                 for proveedor in proveedores:
                     if proveedor in texto_txt:
                         rangos = {
-                            "C.H. Robinson": (1, 5),
+                            "C.H. Robinson Company, Inc": (1, 5),
                             "SOLUTRANS LOGISTICS S,A": (7, 11),
-                            "SAMSUNG SDS AMERICA, INC.": (13, 16),
+                            "SAMSUNG SDS": (13, 16),
                             "Transplace Mexico LLC": (18, 22)
                         }
 
@@ -58,10 +58,9 @@ def procesar_documentos(carpeta, progress_bar):
                             if resultados:
                                 resultados["Archivo"] = os.path.basename(ruta_txt)
                                 datos_palabras.append(resultados)
-                        print(resultados)
                         break
                         
-            progress_bar.set(i / total_archivos)
+        # progress_bar.set(i / total_archivos)
 
         # Eliminar archivos temporales .txt
         for ruta_txt in [os.path.join(carpeta, f) for f in os.listdir(carpeta) if f.endswith('.txt')]:
@@ -71,12 +70,14 @@ def procesar_documentos(carpeta, progress_bar):
     df_facturas = pd.DataFrame(datos_facturas)
     df_palabras = pd.DataFrame(datos_palabras)
 
-    # Devolver los DataFrames
-    return df_facturas, df_palabras
+    # print(f"segun XML: \n\n\n\n{df_facturas}")
+    # # print(f"segun proveedores{df_palabras}")
 
-    # # Exportar resultados a Excel
-    # if datos_facturas or datos_palabras:
-    #     crear_excel(datos_facturas, datos_palabras, ruta_excel)
-    #     messagebox.showinfo("Éxito", f"Datos exportados a {ruta_excel}")
-    # else:
-    #     messagebox.showwarning("Atención", "No se encontraron datos para exportar.")
+    # Exportar resultados a Excel
+    if datos_facturas or datos_palabras:
+        crear_excel(datos_facturas, datos_palabras, ruta_excel)
+        messagebox.showinfo("Éxito", f"Datos exportados a {ruta_excel}")
+    else:
+        messagebox.showwarning("Atención", "No se encontraron datos para exportar.")
+
+    return df_facturas, df_palabras

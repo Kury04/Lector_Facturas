@@ -14,7 +14,7 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango):
             return {}  # No se extraen datos si no hay proveedor identificado
 
         resultados = {
-            "Nombre proveedor": proveedor_encontrado,
+            "nombre_emisor": proveedor_encontrado,
             "TAX ID": "N/A",
             "Invoice": "Error[Invoice]",
             "Fecha": "Error[Fecha]",

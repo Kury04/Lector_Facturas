@@ -20,7 +20,7 @@ def crear_excel(datos_facturas, datos_proveedores, ruta_excel):
                 df_facturas.to_excel(writer, sheet_name="FF", index=False)
             
             # Hoja FX (Proveedores TXT)
-            columnas_fx = ["ID", "Nombre proveedor", "TAX ID", "Invoice", "Fecha", "Moneda", "Total"]
+            columnas_fx = ["ID", "nombre_emisor", "TAX ID", "Invoice", "Fecha", "Moneda", "Total"]
             df_fx = pd.DataFrame(datos_proveedores, columns=columnas_fx) if datos_proveedores else pd.DataFrame(columns=columnas_fx)
             df_fx.to_excel(writer, sheet_name="FX", index=False)
 
