@@ -21,5 +21,3 @@ def extraer_columnas():
         return None, None
 
     return df_f43, df_operaciones
-
-extraer_columnas()

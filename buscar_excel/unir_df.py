@@ -8,7 +8,7 @@ from xml_procesador.procesador import procesar_documentos
 
 def buscar_columnas():
     # Procesar los documentos en la carpeta especificada
-    carpeta = "C:/Users/jparedes_consultant/Documents/Alfaparf PYTHON/Sarita XML/EXPORTACIÓN/1. ENERO"
+    carpeta = "C:/Users/jparedes_consultant/Documents/Alfaparf PYTHON/2025"
 
     # DATAFRAMES
     df_facturas, df_palabras = procesar_documentos(carpeta)
@@ -19,6 +19,18 @@ def buscar_columnas():
     df_facturas["nombre_emisor"] = df_facturas["nombre_emisor"].str.strip().str.upper()
     df_palabras["nombre_emisor"] = df_palabras["nombre_emisor"].str.strip().str.upper()
     df_facturas["Folio"] = df_facturas["Folio"].str.strip().str.upper()
+    # Normalizar columnas clave en df_palabras
+    df_palabras['Invoice'] = df_palabras['Invoice'].astype(str).str.strip().str.upper()
+
+    # Normalizar columnas clave en df_operaciones
+    df_operaciones['Unnamed: 14'] = df_operaciones['Unnamed: 14'].astype(str).str.strip().str.upper()
+    df_operaciones['Unnamed: 25'] = df_operaciones['Unnamed: 25'].astype(str).str.strip().str.upper()
+    df_operaciones['CUSTODIA'] = df_operaciones['CUSTODIA'].astype(str).str.strip().str.upper()
+     
+    print("Valores únicos en 'Invoice' (df_palabras):", df_palabras['Invoice'].unique())
+    print("Valores únicos en 'Unnamed: 14' (df_operaciones):", df_operaciones['Unnamed: 14'].unique())
+    print("Valores únicos en 'Unnamed: 25' (df_operaciones):", df_operaciones['Unnamed: 25'].unique())
+    print("Valores únicos en 'CUSTODIA' (df_operaciones):", df_operaciones['CUSTODIA'].unique())
 
     # Función para búsqueda secuencial
     def busqueda_secuencial(df_left, col_left, df_right, cols_right, col_extra):
@@ -33,16 +45,22 @@ def buscar_columnas():
                     break  # Si encuentra, pasa a la siguiente fila
         return df_left
 
+    # Aplicar la búsqueda secuencial
+    df_palabras = busqueda_secuencial(
+        df_palabras, 'Invoice', df_operaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40'
+    )
+
+    # # Verificar las columnas creadas
+    # print("Columnas en df_palabras:", df_palabras.columns)
+
+    # # Imprimir los resultados
+    # print(df_palabras[['Invoice', 'Unnamed: 40']])
+
+    
     # Aplicar búsqueda secuencial para df_facturas y df_operaciones
     df_facturas = busqueda_secuencial(
         df_facturas, 'Folio', df_operaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40'
     )
-
-    # Aplicar búsqueda secuencial para df_palabras y df_operaciones
-    df_palabras = busqueda_secuencial(
-        df_palabras, 'Invoice', df_operaciones, ['Unnamed: 14'], 'Unnamed: 40'
-    )
-
 
     # Unir DATAFRAMES
     try:
@@ -67,7 +85,15 @@ def buscar_columnas():
     # Guardar en Excel
     output_path = "./resources/files/datos_unidos.xlsx"
     with pd.ExcelWriter(output_path) as writer:
-        df_nacionales.to_excel(writer, index=False, sheet_name="Nacionales")
-        df_extranjeros.to_excel(writer, index=False, sheet_name="Extranjeros")
+        # Eliminar columnas no deseadas
+        df_extranjeros = df_extranjeros.drop(columns=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA','Archivo', 'Denominacion cuenta contrapartida'])
+        df_extranjeros_completas = df_extranjeros.dropna()
+
+        df_nacionales = df_nacionales.drop(columns=['Denominacion cuenta contrapartida'])
+        df_nacionales_completas = df_nacionales.dropna()
+
+        #Guardar excel
+        df_nacionales_completas.to_excel(writer, index=False, sheet_name="Nacionales")
+        df_extranjeros_completas.to_excel(writer, index=False, sheet_name="Extranjeros")
 
 buscar_columnas()
