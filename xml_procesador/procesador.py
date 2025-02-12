@@ -19,6 +19,10 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
 
     # Procesar archivos XML
     archivos_xml = glob.glob(f"{carpeta}/**/*.xml", recursive=True)
+    if not archivos_xml:
+        print(f"No se encontraron archivos XML en {carpeta}")
+    else:
+        print(f"Se encontraron {len(archivos_xml)} archivos XML.")
     datos_facturas = asignar_ids(archivos_xml) if archivos_xml else []
     for ruta_xml in archivos_xml:
         print(f"Procesando archivo: {ruta_xml}")

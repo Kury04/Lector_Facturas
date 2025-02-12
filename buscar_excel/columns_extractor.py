@@ -9,12 +9,12 @@ def extraer_columnas():
 
     # Columnas a extraer
     columnas_f43 = ['Cta CP (SAP)', 'Denominacion cuenta contrapartida', 'Centro coste', 'Cl coste']
-    columnas_operaciones = ['Unnamed: 14', 'Unnamed: 25', 'Unnamed: 40']
+    columnas_operaciones = ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Unnamed: 40']
 
     try:
         # Leer los archivos de Excel
         df_f43 = pd.read_excel(excel_f43, sheet_name='Acreedores SAP', usecols=columnas_f43)
-        df_operaciones = pd.read_excel(opera_expor, sheet_name='ENERO', usecols=columnas_operaciones)
+        df_operaciones = pd.read_excel(opera_expor, sheet_name='ENERO' , usecols=columnas_operaciones)
 
     except Exception as e:
         print(f"Error al leer los datos: {e}")
