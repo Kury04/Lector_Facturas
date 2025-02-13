@@ -1,18 +1,19 @@
 import pandas as pd
 import os
-from columns_extractor import extraer_columnas
 import sys
 import numpy as np
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from xml_procesador.procesador import procesar_documentos
+from buscar_excel.columns_extractor import extraer_columnas
 
 def buscar_columnas():
     # Procesar los documentos en la carpeta especificada
     carpeta = "C:/Users/jparedes_consultant/Documents/Alfaparf PYTHON/2025"
+    # carpeta = "./resources/files"
 
     # DATAFRAMES
     df_facturas, df_palabras = procesar_documentos(carpeta)
-    df_f43, df_operaciones  = extraer_columnas()
+    df_f43, df_operaciones, df_TC  = extraer_columnas()
 
     # Normalizar claves de unión
     df_f43["Denominacion cuenta contrapartida"] = df_f43["Denominacion cuenta contrapartida"].str.strip().str.upper()
@@ -50,18 +51,12 @@ def buscar_columnas():
         df_palabras, 'Invoice', df_operaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40'
     )
 
-    # # Verificar las columnas creadas
-    # print("Columnas en df_palabras:", df_palabras.columns)
-
-    # # Imprimir los resultados
-    # print(df_palabras[['Invoice', 'Unnamed: 40']])
-
-    
     # Aplicar búsqueda secuencial para df_facturas y df_operaciones
     df_facturas = busqueda_secuencial(
         df_facturas, 'Folio', df_operaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40'
     )
 
+    
     # Unir DATAFRAMES
     try:
         # FF CON F43
@@ -72,6 +67,7 @@ def buscar_columnas():
         # Concatenar resultados
         df_nacionales = pd.concat([df1_FF, df_facturas])
         df_extranjeros = pd.concat([df_operaciones, df3_FX])
+
 
         # Si df_unido_F está vacío, mostramos advertencia
         if df1_FF.empty:

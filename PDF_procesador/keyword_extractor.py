@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango):
     """Extrae valores clave de un archivo TXT según el proveedor y el rango asignado en atributos.txt."""
@@ -45,15 +46,27 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango):
         for palabra in palabras_clave:
             for linea in lineas_txt:
                 if palabra.lower() in linea.lower():
-                    patron = rf"{palabra}.*?[.:$]?\s*(\S+)"
-                    coincidencia = re.search(patron, linea, re.IGNORECASE)
-                    if coincidencia:
-                        valor = coincidencia.group(1).strip()
-                        for columna, palabras in mapeo_palabras.items():
-                            if palabra.lower() in palabras:
-                                resultados[columna] = valor
-                                break  # Se encontró el valor, no seguir buscando
-                        break  # Pasar a la siguiente palabra clave
+                    # Si el proveedor es C.H. Robinson y la palabra clave es "Fecha", usar un formato especial
+                    if proveedor_encontrado == "C.H. Robinson Company, Inc" and palabra.lower() in ["date", "fecha", "invoice date", "due date"]:
+                        patron_fecha = re.compile(r"(?i)Invoice Date:\s*([A-Za-z]+\s+\d{1,2},\s+\d{4})")
+                        coincidencia_fecha = patron_fecha.search(linea)
+                        if coincidencia_fecha:
+                            fecha_str = coincidencia_fecha.group(1)
+                            # Convertir la fecha al formato deseado (00/00/0000)
+                            fecha_obj = datetime.strptime(fecha_str, "%B %d, %Y")
+                            resultados["Fecha"] = fecha_obj.strftime("%d/%m/%Y")
+                            break  # Salir del bucle si se encuentra la fecha
+                    else:
+                        # Para otros proveedores o campos, usar la lógica original
+                        patron = rf"{palabra}.*?[.:$]?\s*(\S+)"
+                        coincidencia = re.search(patron, linea, re.IGNORECASE)
+                        if coincidencia:
+                            valor = coincidencia.group(1).strip()
+                            for columna, palabras in mapeo_palabras.items():
+                                if palabra.lower() in palabras:
+                                    resultados[columna] = valor
+                                    break  # Se encontró el valor, no seguir buscando
+                            break  # Pasar a la siguiente palabra clave
 
         return resultados
 

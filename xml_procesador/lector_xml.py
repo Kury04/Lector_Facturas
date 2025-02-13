@@ -1,5 +1,6 @@
 import xmltodict
 import os
+from datetime import datetime
 
 def leer_xml(ruta_xml):
     with open(ruta_xml, 'r', encoding='utf-8') as file:
@@ -53,10 +54,17 @@ def leer_xml(ruta_xml):
                 if retencion.get('@Impuesto') == '001':
                     tasa_isr = retencion.get('@TasaOCuota', 'N/A')
 
+    fecha = comprobante.get('@Fecha', 'N/A')[:10]
+    if fecha != 'N/A':
+        try:
+            fecha = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')
+        except ValueError:
+            fecha = 'N/A'               
+
     return {
         "Folio": comprobante.get('@Folio', 'N/A'),
         "Folio Fiscal": complemento.get('tfd:TimbreFiscalDigital', {}).get('@UUID', 'N/A'),
-        "Fecha": comprobante.get('@Fecha', 'N/A')[:10],
+        "Fecha": fecha, 
         "ClaveProdServ": clave_prod_serv,
         "RFC_Receptor": receptor.get('@Rfc', 'N/A'),
         "RFC_Emisor": emisor.get('@Rfc', 'N/A'),
