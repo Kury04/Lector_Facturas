@@ -59,7 +59,7 @@ def leer_xml(ruta_xml):
         try:
             fecha = datetime.strptime(fecha, '%Y-%m-%d').strftime('%d/%m/%Y')
         except ValueError:
-            fecha = 'N/A'               
+            fecha = 'N/A'           
 
     return {
         "Folio": comprobante.get('@Folio', 'N/A'),
@@ -103,4 +103,7 @@ def asignar_ids(archivos_xml):
         except Exception as e:
             print(f"Error al procesar el archivo {ruta_xml}: {e}")
 
+        if factura:
+            factura["Archivo"] = os.path.basename(ruta_xml)
+            datos_facturas.append(factura)
     return datos_facturas

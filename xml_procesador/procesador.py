@@ -31,7 +31,6 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
             datos_facturas.append(factura)
         except Exception as e:
             print(f"Error al procesar el archivo {ruta_xml}: {e}")
-
     datos_palabras = []
 
     # Procesar archivos PDF si hay palabras clave
@@ -66,9 +65,9 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
                         
         # progress_bar.set(i / total_archivos)
 
-        # # Eliminar archivos temporales .txt
-        # for ruta_txt in [os.path.join(carpeta, f) for f in os.listdir(carpeta) if f.endswith('.txt')]:
-        #     os.remove(ruta_txt)
+        # Eliminar archivos temporales .txt
+        for ruta_txt in [os.path.join(carpeta, f) for f in os.listdir(carpeta) if f.endswith('.txt')]:
+            os.remove(ruta_txt)
 
     # Convertir datos en DataFrames
     df_facturas = pd.DataFrame(datos_facturas)
