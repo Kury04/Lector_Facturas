@@ -20,7 +20,8 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango):
             "Invoice": "Error[Invoice]",
             "Fecha": "Error[Fecha]",
             "Moneda": "USD",
-            "Total": "Error[Total]"
+            "Total": "Error[Total]",
+            "RFC_Receptor": "DOB001109DK5"
         }
 
         # Mapeo de palabras clave

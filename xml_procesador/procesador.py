@@ -73,9 +73,6 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
     df_facturas = pd.DataFrame(datos_facturas)
     df_palabras = pd.DataFrame(datos_palabras)
 
-    # print(f"segun XML: \n\n\n\n{df_facturas}")
-    # # print(f"segun proveedores{df_palabras}")
-
     # Exportar resultados a Excel
     if datos_facturas or datos_palabras:
         crear_excel(datos_facturas, datos_palabras, ruta_excel)

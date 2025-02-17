@@ -72,8 +72,9 @@ def buscar_columnas():
         df_extranjeros = df_extranjeros.drop(columns=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Archivo', 'Denominacion cuenta contrapartida'])
         df_extranjeros = df_extranjeros[df_extranjeros.isna().sum(axis=1) <= 3]
 
-        df_nacionales_completa = df_nacionales.drop(columns=['Denominacion cuenta contrapartida'])
-        df_palabras_tc = df_palabras_tc.drop(columns=['Archivo'])
+        df_nacionales_completa = df_nacionales.drop(columns=['Denominacion cuenta contrapartida','Archivo'])
+        # Eliminar duplicados en el DataFrame consolidado por 'Archivo' y 'Folio'
+        df_nacionales_completa = df_nacionales_completa.drop_duplicates(subset=['Archivo', 'Folio'])
         df_palabras_tc = df_palabras_tc[df_palabras_tc.isna().sum(axis=1) <= 3]
 
         df_nacionales_completa.to_excel(writer, index=False, sheet_name="Nacionales")
