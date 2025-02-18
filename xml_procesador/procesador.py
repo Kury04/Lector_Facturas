@@ -73,11 +73,11 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
     df_facturas = pd.DataFrame(datos_facturas)
     df_palabras = pd.DataFrame(datos_palabras)
 
-    # Exportar resultados a Excel
-    if datos_facturas or datos_palabras:
-        crear_excel(datos_facturas, datos_palabras, ruta_excel)
-        messagebox.showinfo("Éxito", f"Datos exportados a {ruta_excel}")
-    else:
-        messagebox.showwarning("Atención", "No se encontraron datos para exportar.")
+    # # Exportar resultados a Excel
+    # if datos_facturas or datos_palabras:
+    #     crear_excel(datos_facturas, datos_palabras, ruta_excel)
+    #     messagebox.showinfo("Éxito", f"Datos exportados a {ruta_excel}")
+    # else:
+    #     messagebox.showwarning("Atención", "No se encontraron datos para exportar.")
 
     return df_facturas, df_palabras

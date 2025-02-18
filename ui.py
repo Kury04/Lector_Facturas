@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import os
-from xml_procesador.procesador import procesar_documentos
+from buscar_excel.unir_df import buscar_columnas
 
 def seleccionar_carpeta(entrada):
     carpeta_seleccionada = filedialog.askdirectory()
@@ -9,15 +9,15 @@ def seleccionar_carpeta(entrada):
         entrada.delete(0, ctk.END)
         entrada.insert(0, carpeta_seleccionada)
 
-def iniciar_proceso(entrada, progress_bar):
+def iniciar_proceso(entrada):
     carpeta = entrada.get()
     if not carpeta or not os.path.exists(carpeta):
         messagebox.showerror("Error", "Por favor, seleccione una carpeta válida.")
         return
     
-    progress_bar.set(0)
-    procesar_documentos(carpeta, progress_bar)
-    progress_bar.set(1)
+    # progress_bar.set(0)
+    buscar_columnas(carpeta)
+    # progress_bar.set(1)
     messagebox.showinfo("Éxito", f"Procesamiento completado en {carpeta}")
 
 
@@ -38,11 +38,11 @@ def iniciar_interfaz():
     boton_seleccionar = ctk.CTkButton(ventana, text="Examinar", command=lambda: seleccionar_carpeta(entrada_carpeta))
     boton_seleccionar.pack(pady=5)
 
-    boton_procesar = ctk.CTkButton(ventana, text="Procesar", command=lambda: iniciar_proceso(entrada_carpeta, progress_bar))
+    boton_procesar = ctk.CTkButton(ventana, text="Procesar", command=lambda: iniciar_proceso(entrada_carpeta))
     boton_procesar.pack(pady=5)
 
-    progress_bar = ctk.CTkProgressBar(ventana, width=400)
-    progress_bar.set(0)
-    progress_bar.pack(pady=10)
+    # progress_bar = ctk.CTkProgressBar(ventana, width=400)
+    # progress_bar.set(0)
+    # progress_bar.pack(pady=10)
 
     ventana.mainloop()
