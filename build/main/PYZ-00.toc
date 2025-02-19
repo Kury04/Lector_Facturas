@@ -762,6 +762,10 @@
   ('concurrent.futures.thread',
    'C:\\Users\\jparedes_consultant\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\concurrent\\futures\\thread.py',
    'PYMODULE'),
+  ('config',
+   'C:\\Users\\jparedes_consultant\\Documents\\Alfaparf '
+   'PYTHON\\Lector_Facturas-main\\config.py',
+   'PYMODULE'),
   ('configparser',
    'C:\\Users\\jparedes_consultant\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\configparser.py',
    'PYMODULE'),
@@ -5180,10 +5184,6 @@
   ('xml_procesador',
    'C:\\Users\\jparedes_consultant\\Documents\\Alfaparf '
    'PYTHON\\Lector_Facturas-main\\xml_procesador\\__init__.py',
-   'PYMODULE'),
-  ('xml_procesador.exportar_excel',
-   'C:\\Users\\jparedes_consultant\\Documents\\Alfaparf '
-   'PYTHON\\Lector_Facturas-main\\xml_procesador\\exportar_excel.py',
    'PYMODULE'),
   ('xml_procesador.lector_xml',
    'C:\\Users\\jparedes_consultant\\Documents\\Alfaparf '
