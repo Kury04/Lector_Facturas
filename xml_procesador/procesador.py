@@ -1,6 +1,7 @@
 import os
 import glob
 import pandas as pd
+import json
 from tkinter import messagebox
 from .lector_xml import leer_xml, asignar_ids
 from PDF_procesador.file_utils import buscar_pdfs_en_carpeta
@@ -8,11 +9,13 @@ from PDF_procesador.pdf_utils import extraer_texto_pdf
 from PDF_procesador.keyword_extractor import extraer_valores
 from utils.archivos import leer_archivo
 
-from config import ATRIBUTOS, PROVEEDORES_EXTRANJEROS
 
-def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
-    ruta_atributos = ATRIBUTOS
-    archivo_proveedores = PROVEEDORES_EXTRANJEROS
+def procesar_documentos(carpeta,df_facturas=None, df_palabras=None, config_file="config.json"):
+    with open(config_file, "r") as f:
+            config = json.load(f)
+
+    ruta_atributos = config["ATRIBUTOS"]
+    archivo_proveedores = config["PROVEEDORES_EXTRANJEROS"]
 
     palabras_clave = leer_archivo(ruta_atributos)
     proveedores = leer_archivo(archivo_proveedores)
