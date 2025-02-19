@@ -6,13 +6,13 @@ from .lector_xml import leer_xml, asignar_ids
 from PDF_procesador.file_utils import buscar_pdfs_en_carpeta
 from PDF_procesador.pdf_utils import extraer_texto_pdf
 from PDF_procesador.keyword_extractor import extraer_valores
-from xml_procesador.exportar_excel import crear_excel
 from utils.archivos import leer_archivo
 
+from config import ATRIBUTOS, PROVEEDORES_EXTRANJEROS
+
 def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
-    ruta_atributos = "resources/atributos.txt"
-    archivo_proveedores = "resources/proveedores_extranjeros.txt"
-    ruta_excel = os.path.join(carpeta, "Datos Facturas.xlsx")
+    ruta_atributos = ATRIBUTOS
+    archivo_proveedores = PROVEEDORES_EXTRANJEROS
 
     palabras_clave = leer_archivo(ruta_atributos)
     proveedores = leer_archivo(archivo_proveedores)
@@ -36,7 +36,6 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None):
     # Procesar archivos PDF si hay palabras clave
     if palabras_clave:
         archivos_pdf = buscar_pdfs_en_carpeta(carpeta)
-        total_archivos = len(archivos_pdf)
 
         for i, ruta_pdf in enumerate(archivos_pdf, 1):
             nombre_txt = os.path.basename(ruta_pdf).replace('.pdf', '.txt')

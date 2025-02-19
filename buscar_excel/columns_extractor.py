@@ -1,19 +1,20 @@
 import pandas as pd
 import sys
 import os
+from config import EXCEL_F43, EXCEL_EXPORT, EXCEL_IMPORT, EXCEL_TC  # Importar rutas desde config.py
 
 def extraer_columnas():
     # Rutas
-    excel_f43 = "resources/files/F-43.xlsx"
-    opera_export = "resources/files/OPERACIONES DE EXPORTACION 2025.xlsx"
-    opera_import= "resources/files/OPERACIONES DE IMPORTACION 2025.xlsx"
-    excel_TC = "resources/files/TC.xlsx"
+    excel_f43 = EXCEL_F43
+    opera_export = EXCEL_EXPORT
+    opera_import= EXCEL_IMPORT
+    excel_TC = EXCEL_TC
 
     # Columnas a extraer
     columnas_f43 = ['Cta CP (SAP)', 'Denominacion cuenta contrapartida', 'Centro coste', 'Cl coste']
     columnas_export = ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Unnamed: 40']
-    columnas_TC = ['Fecha','Valor','CuentaIva/13250055']
-    columnas_import = ['Unnamed: 10','Unnamed: 20','Unnamed: 30', 'CUSTODIA','Unnamed: 48']
+    columnas_TC = ['Fecha', 'Valor', 'CuentaIva/13250055']
+    columnas_import = ['Unnamed: 10', 'Unnamed: 20', 'Unnamed: 30', 'CUSTODIA', 'Unnamed: 48']
 
     try:
         # Leer los archivos de Excel
