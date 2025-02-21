@@ -64,8 +64,8 @@ def buscar_columnas(carpeta, progress_bar):
     progress_bar.set(progreso / total_archivos)
 
     # Realizar merges
-    df1_FF = pd.merge(df_facturas, df_f43, how='outer', left_on='nombre_emisor', right_on='Denominacion cuenta contrapartida')
-    df3_FX = pd.merge(df_palabras, df_f43, how='outer', left_on='nombre_emisor', right_on='Denominacion cuenta contrapartida')
+    df1_FF = pd.merge(df_facturas, df_f43, how='left', left_on='nombre_emisor', right_on='Denominacion cuenta contrapartida')
+    df3_FX = pd.merge(df_palabras, df_f43, how='left', left_on='nombre_emisor', right_on='Denominacion cuenta contrapartida')
 
     df_palabras_tc = pd.merge(df_palabras, df_TC, on="Fecha", how="left")
     df_palabras_tc.loc[~df_palabras_tc["nombre_emisor"].isin(["C.H. ROBINSON COMPANY, INC", "SOLUTRANS LOGISTICS S,A"]), ["Valor", "CuentaIva/13250055"]] = None
@@ -87,21 +87,20 @@ def buscar_columnas(carpeta, progress_bar):
     # Guardar resultados en Excel
     output_path = os.path.join(carpeta, "Datos_Unificados.xlsx")
     with pd.ExcelWriter(output_path) as writer:
-        df_nacionales = df_nacionales.drop(columns=['Denominacion cuenta contrapartida', 'Archivo'])
+        df_nacionales = df_nacionales.drop(columns=['Denominacion cuenta contrapartida'])
         df_nacionales = df_nacionales.drop_duplicates(subset=['Folio'])
-        df_nacionales = df_nacionales[df_nacionales.isna().sum(axis=1) <= 3]
+        # df_nacionales = df_nacionales[df_nacionales.isna().sum(axis=1) <= 2]
 
-        df_extranjeros_completa = df_extranjeros.drop(columns=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Archivo', 'Denominacion cuenta contrapartida'])
-        df_extranjeros_completa = df_extranjeros_completa.drop_duplicates(subset=['Invoice'])
-        df_extranjeros_completa = df_extranjeros_completa[df_extranjeros_completa.isna().sum(axis=1) <= 3]
-
-        df_prueba = df_prueba.drop(columns=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Unnamed: 40_x', 'Archivo'])
-        df_palabras_tc = df_palabras_tc[df_palabras_tc.isna().sum(axis=1) <= 3]
+        df_prueba = df_prueba.drop(columns=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Unnamed: 40_x'])
+        df_palabras_tc = df_palabras_tc[df_palabras_tc.isna().sum(axis=1) <= 2]
 
         df_nacionales.to_excel(writer, index=False, sheet_name="XML")
         df_prueba.to_excel(writer, index=False, sheet_name="PDFs")
 
+        print("PROCESO TERMINADO CON EXITO!!")
+
+
     progreso += 1
     progress_bar.set(1)
     
-    return df_nacionales, df_extranjeros_completa, df_palabras_tc
+    return df_nacionales, df_palabras_tc

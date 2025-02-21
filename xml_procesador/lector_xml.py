@@ -2,6 +2,36 @@ import xmltodict
 import os
 from datetime import datetime
 
+def asignar_ids(archivos_xml,carpetas_ids=None):
+    if carpetas_ids is None:
+        carpetas_ids = {}
+    id_actual = 0  # Contador para IDs incrementales
+
+    datos_facturas = []
+    for ruta_xml in archivos_xml:
+        # Obtener el nombre de la carpeta que contiene el archivo XML
+        carpeta = os.path.basename(os.path.dirname(ruta_xml))
+
+        # Si la carpeta no está en el diccionario, asignarle un nuevo ID
+        if carpeta not in carpetas_ids:
+            id_actual += 1
+            carpetas_ids[carpeta] = id_actual
+        try:
+            # Leer el archivo XML
+            factura = leer_xml(ruta_xml)
+            # Asignar el ID de la carpeta al campo "ID" de la factura
+            factura["ID"] = carpetas_ids[carpeta]
+            datos_facturas.append(factura)
+        except Exception as e:
+            print(f"Error al procesar el archivo {ruta_xml}: {e}")
+            continue
+
+        if factura:
+            factura["Archivo"] = os.path.basename(ruta_xml)
+            datos_facturas.append(factura)
+
+    return datos_facturas
+
 def leer_xml(ruta_xml):
     with open(ruta_xml, 'r', encoding='utf-8') as file:
         xml_data = file.read()
@@ -62,6 +92,7 @@ def leer_xml(ruta_xml):
             fecha = 'N/A'           
 
     return {
+        "ID": asignar_ids,
         "Folio": comprobante.get('@Folio', 'N/A'),
         "Folio Fiscal": complemento.get('tfd:TimbreFiscalDigital', {}).get('@UUID', 'N/A'),
         "Fecha": fecha, 
@@ -78,32 +109,3 @@ def leer_xml(ruta_xml):
         "Subtotal": comprobante.get('@SubTotal', 'N/A'),
         "Total": comprobante.get('@Total', 'N/A'),
     }
-
-def asignar_ids(archivos_xml):
-    # Diccionario para almacenar el ID de cada carpeta
-    carpetas_ids = {}
-    id_actual = 0  # Contador para IDs incrementales
-
-    datos_facturas = []
-    for ruta_xml in archivos_xml:
-        # Obtener el nombre de la carpeta que contiene el archivo XML
-        carpeta = os.path.basename(os.path.dirname(ruta_xml))
-
-        # Si la carpeta no está en el diccionario, asignarle un nuevo ID
-        if carpeta not in carpetas_ids:
-            id_actual += 1
-            carpetas_ids[carpeta] = id_actual
-
-        try:
-            # Leer el archivo XML
-            factura = leer_xml(ruta_xml)
-            # Asignar el ID de la carpeta al campo "ID" de la factura
-            factura["ID"] = carpetas_ids[carpeta]
-            datos_facturas.append(factura)
-        except Exception as e:
-            print(f"Error al procesar el archivo {ruta_xml}: {e}")
-
-        if factura:
-            factura["Archivo"] = os.path.basename(ruta_xml)
-            datos_facturas.append(factura)
-    return datos_facturas

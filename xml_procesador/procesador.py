@@ -64,8 +64,6 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None, config_file=
                                 resultados["Archivo"] = os.path.basename(ruta_txt)
                                 datos_palabras.append(resultados)
                         break
-                        
-        # progress_bar.set(i / total_archivos)
 
         # Eliminar archivos temporales .txt
         for ruta_txt in [os.path.join(carpeta, f) for f in os.listdir(carpeta) if f.endswith('.txt')]:
