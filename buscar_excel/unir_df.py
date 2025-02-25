@@ -1,6 +1,6 @@
-import pandas as pd
 import os
 import sys
+import pandas as pd
 import numpy as np
 from openpyxl import load_workbook
 
@@ -8,30 +8,23 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from buscar_excel.columns_extractor import extraer_columnas
 from xml_procesador.procesador import procesar_documentos
+from buscar_excel.procesamiento import limpiar_dataframe, busqueda_secuencial
+from buscar_excel.archivo_excel import guardar_resultados
 
 def buscar_columnas(carpeta, progress_bar):
     archivos = os.listdir(carpeta)
-    total_archivos = len(archivos) if archivos else 1  # Evitar división por cero
+    total_archivos = len(archivos) if archivos else 1
     progreso = 0
 
-    # Procesar documentos y extraer columnas
     df_facturas, df_palabras = procesar_documentos(carpeta)
     df_f43, df_exportaciones, df_TC, df_importaciones = extraer_columnas()
 
-    # Eliminar duplicados
     df_facturas = df_facturas.drop_duplicates(subset=['Archivo'])
     df_importaciones = df_importaciones.drop_duplicates(subset=['Unnamed: 10', 'Unnamed: 20', 'Unnamed: 30', 'CUSTODIA'])
     df_exportaciones = df_exportaciones.drop_duplicates(subset=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'])
 
-    # Actualizar progreso
     progreso += 1
     progress_bar.set(progreso / total_archivos)
-
-    # Función para limpiar y normalizar datos
-    def limpiar_dataframe(df, columnas):
-        for col in columnas:
-            df[col] = df[col].astype(str).str.strip().str.upper()
-        return df
 
     df_f43 = limpiar_dataframe(df_f43, ["Denominacion cuenta contrapartida"])
     df_facturas = limpiar_dataframe(df_facturas, ["nombre_emisor", "Folio"])
@@ -42,37 +35,15 @@ def buscar_columnas(carpeta, progress_bar):
     progreso += 1
     progress_bar.set(progreso / total_archivos)
 
-    # Convertir fechas
     df_palabras["Fecha"] = pd.to_datetime(df_palabras["Fecha"], dayfirst=True, errors='coerce')
     df_TC["Fecha"] = pd.to_datetime(df_TC["Fecha"], dayfirst=True, errors='coerce')
 
-    def busqueda_secuencial(df_left, col_left, df_right, cols_right, col_extra):
-        df_left[col_extra] = np.nan  # Agrega una nueva columna con valores NaN
-
-        for index, row in df_left.iterrows():
-            valor = row[col_left]  # Valor de la columna a buscar
-            print(f"\nBuscando el valor '{valor}' en df_right...")  # Depuración
-
-            for col in cols_right:
-                match = df_right[df_right[col] == valor]  # Filtra coincidencias
-
-                if not match.empty:
-                    print(f"Match encontrado en columna '{col}':\n{match}")  # Depuración
-                    df_left.at[index, col_extra] = match.iloc[0][col_extra]
-                    break  # Sale del loop si encuentra coincidencia
-                else:
-                    print(f"No se encontró coincidencia en la columna '{col}'")  # Depuración
-
-        return df_left
-
-
-    df_palabras = busqueda_secuencial(df_palabras, 'Invoice', df_exportaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40') 
-    df_facturas = busqueda_secuencial(df_facturas, 'Folio', df_exportaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40')
+    df_palabras = busqueda_secuencial(df_palabras, 'Invoice', df_importaciones, df_exportaciones, 'Unnamed: 48', 'Unnamed: 40')
+    df_facturas = busqueda_secuencial(df_facturas, 'Folio', df_importaciones, df_exportaciones, 'Unnamed: 48', 'Unnamed: 40')
 
     progreso += 1
     progress_bar.set(progreso / total_archivos)
 
-    # Realizar merges
     df1_FF = pd.merge(df_facturas, df_f43, how='left', left_on='nombre_emisor', right_on='Denominacion cuenta contrapartida')
     df3_FX = pd.merge(df_palabras, df_f43, how='left', left_on='nombre_emisor', right_on='Denominacion cuenta contrapartida')
 
@@ -93,29 +64,11 @@ def buscar_columnas(carpeta, progress_bar):
     progreso += 1
     progress_bar.set(progreso / total_archivos)
 
-    # Guardar resultados en Excel
-    output_path = os.path.join(carpeta, "Datos_Unificados.xlsx")
-
-    with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
-        # Verificar si los DataFrames tienen datos antes de guardarlos
-        if not df_nacionales.empty:
-            df_nacionales = df_nacionales.drop(columns=['Denominacion cuenta contrapartida'], errors='ignore')
-            df_nacionales = df_nacionales.drop_duplicates(subset=['Folio'])
-            df_nacionales.to_excel(writer, index=False, sheet_name="XML")
-        
-        if not df_prueba.empty:
-            df_prueba = df_prueba.drop(columns=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Unnamed: 40_x'], errors='ignore')
-            df_prueba.to_excel(writer, index=False, sheet_name="PDFs")
-
-        # Si no se escribieron hojas, agregar una vacía para evitar el error
-        if len(writer.book.sheetnames) == 0:
-            pd.DataFrame({"Mensaje": ["No hay datos disponibles"]}).to_excel(writer, index=False, sheet_name="HojaVacia")
+    guardar_resultados(df_nacionales, df_prueba, carpeta)
 
     print("PROCESO TERMINADO CON ÉXITO!!")
 
-
-
     progreso += 1
     progress_bar.set(1)
-    
+
     return df_nacionales, df_palabras_tc
