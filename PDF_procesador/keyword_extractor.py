@@ -1,20 +1,41 @@
 import re
+import os
+import sys
 from datetime import datetime
 
+# Diccionario global para almacenar IDs por carpeta
+carpetas_ids = {}
+id_actual = 0  # Contador incremental para IDs
+
+
+def asignar_id(ruta_txt):
+    """Asigna un ID único basado en la carpeta del archivo TXT."""
+    global id_actual  # Usamos la variable global para mantener el conteo
+    carpeta = os.path.basename(os.path.dirname(ruta_txt))  # Obtiene el nombre de la carpeta
+
+    if carpeta not in carpetas_ids:
+        id_actual += 1  # Incrementa el ID solo si la carpeta no tiene uno asignado
+        carpetas_ids[carpeta] = id_actual
+
+    return carpetas_ids[carpeta]  # Retorna el ID asignado a la carpeta
+
+
 def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango):
-    """Extrae valores clave de un archivo TXT según el proveedor y el rango asignado en atributos.txt."""
+    """Extrae valores clave de un archivo TXT y asigna un ID basado en su carpeta."""
     try:
+        id_factura = asignar_id(ruta_txt)  # Asignar ID a la factura
+
         with open(ruta_txt, 'r') as archivo:
             lineas_txt = archivo.readlines()
 
-        # Leer palabras clave dentro del rango indicado
         with open(ruta_atributos, 'r') as archivo_atributos:
             palabras_clave = [linea.strip() for i, linea in enumerate(archivo_atributos) if rango[0] <= i + 1 <= rango[1]]
 
         if not proveedor_encontrado:
-            return {}  # No se extraen datos si no hay proveedor identificado
+            return {}  # No se extraen datos sin proveedor identificado
 
         resultados = {
+            "ID": id_factura,  # ID asignado por carpeta
             "nombre_emisor": proveedor_encontrado,
             "TAX ID": "N/A",
             "Invoice": "Error[Invoice]",
@@ -32,33 +53,30 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango):
             "Moneda": ["moneda", "currency"]
         }
 
-        # Expresión regular para extraer el "Total" (segundo código)
+        # Expresión regular para extraer el "Total"
         patron_total = re.compile(r"(?i)(Total Charges in USDs Due|Recibido Conforme Total|Total Amount|Amount Due)[^\d$]*([$]?\s*[\d,]+\.\d{2})")
 
-        # Buscar en todas las líneas el "Total"
+        # Buscar "Total"
         for linea in lineas_txt:
             coincidencia_total = patron_total.search(linea)
             if coincidencia_total:
                 valor_total = coincidencia_total.group(2).replace(',', '').strip()
-                resultados["Total"] = valor_total.lstrip('$')  # Remueve el signo de dólar si existe
-                break  # No seguir buscando después de encontrar el total
+                resultados["Total"] = valor_total.lstrip('$')
+                break
 
-        # Buscar otros valores según palabras clave (primer código)
+        # Buscar otros valores según palabras clave
         for palabra in palabras_clave:
             for linea in lineas_txt:
                 if palabra.lower() in linea.lower():
-                    # Si el proveedor es C.H. Robinson y la palabra clave es "Fecha", usar un formato especial
                     if proveedor_encontrado == "C.H. Robinson Company, Inc" and palabra.lower() in ["date", "fecha", "invoice date", "due date"]:
                         patron_fecha = re.compile(r"(?i)Invoice Date:\s*([A-Za-z]+\s+\d{1,2},\s+\d{4})")
                         coincidencia_fecha = patron_fecha.search(linea)
                         if coincidencia_fecha:
                             fecha_str = coincidencia_fecha.group(1)
-                            # Convertir la fecha al formato deseado (00/00/0000)
                             fecha_obj = datetime.strptime(fecha_str, "%B %d, %Y")
                             resultados["Fecha"] = fecha_obj.strftime("%d/%m/%Y")
-                            break  # Salir del bucle si se encuentra la fecha
+                            break
                     else:
-                        # Para otros proveedores o campos, usar la lógica original
                         patron = rf"{palabra}.*?[.:$]?\s*(\S+)"
                         coincidencia = re.search(patron, linea, re.IGNORECASE)
                         if coincidencia:
@@ -66,8 +84,8 @@ def extraer_valores(ruta_txt, ruta_atributos, proveedor_encontrado, rango):
                             for columna, palabras in mapeo_palabras.items():
                                 if palabra.lower() in palabras:
                                     resultados[columna] = valor
-                                    break  # Se encontró el valor, no seguir buscando
-                            break  # Pasar a la siguiente palabra clave
+                                    break
+                            break
 
         return resultados
 

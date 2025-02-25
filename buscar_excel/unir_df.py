@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import sys
 import numpy as np
+from openpyxl import load_workbook
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -45,20 +46,28 @@ def buscar_columnas(carpeta, progress_bar):
     df_palabras["Fecha"] = pd.to_datetime(df_palabras["Fecha"], dayfirst=True, errors='coerce')
     df_TC["Fecha"] = pd.to_datetime(df_TC["Fecha"], dayfirst=True, errors='coerce')
 
-    # Función para búsqueda secuencial
     def busqueda_secuencial(df_left, col_left, df_right, cols_right, col_extra):
-        df_left[col_extra] = np.nan
+        df_left[col_extra] = np.nan  # Agrega una nueva columna con valores NaN
+
         for index, row in df_left.iterrows():
-            valor = row[col_left]
+            valor = row[col_left]  # Valor de la columna a buscar
+            print(f"\nBuscando el valor '{valor}' en df_right...")  # Depuración
+
             for col in cols_right:
-                match = df_right[df_right[col] == valor]
+                match = df_right[df_right[col] == valor]  # Filtra coincidencias
+
                 if not match.empty:
+                    print(f"Match encontrado en columna '{col}':\n{match}")  # Depuración
                     df_left.at[index, col_extra] = match.iloc[0][col_extra]
-                    break
+                    break  # Sale del loop si encuentra coincidencia
+                else:
+                    print(f"No se encontró coincidencia en la columna '{col}'")  # Depuración
+
         return df_left
 
-    df_palabras = busqueda_secuencial(df_palabras, 'Invoice', df_exportaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40')
-    df_facturas = busqueda_secuencial(df_facturas, 'Folio', df_importaciones, ['Unnamed: 10', 'Unnamed: 20', 'Unnamed: 30', 'CUSTODIA'], 'Unnamed: 48')
+
+    df_palabras = busqueda_secuencial(df_palabras, 'Invoice', df_exportaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40') 
+    df_facturas = busqueda_secuencial(df_facturas, 'Folio', df_exportaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'], 'Unnamed: 40')
 
     progreso += 1
     progress_bar.set(progreso / total_archivos)
@@ -86,18 +95,24 @@ def buscar_columnas(carpeta, progress_bar):
 
     # Guardar resultados en Excel
     output_path = os.path.join(carpeta, "Datos_Unificados.xlsx")
-    with pd.ExcelWriter(output_path) as writer:
-        df_nacionales = df_nacionales.drop(columns=['Denominacion cuenta contrapartida'])
-        df_nacionales = df_nacionales.drop_duplicates(subset=['Folio'])
-        # df_nacionales = df_nacionales[df_nacionales.isna().sum(axis=1) <= 2]
 
-        df_prueba = df_prueba.drop(columns=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Unnamed: 40_x'])
-        df_palabras_tc = df_palabras_tc[df_palabras_tc.isna().sum(axis=1) <= 2]
+    with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+        # Verificar si los DataFrames tienen datos antes de guardarlos
+        if not df_nacionales.empty:
+            df_nacionales = df_nacionales.drop(columns=['Denominacion cuenta contrapartida'], errors='ignore')
+            df_nacionales = df_nacionales.drop_duplicates(subset=['Folio'])
+            df_nacionales.to_excel(writer, index=False, sheet_name="XML")
+        
+        if not df_prueba.empty:
+            df_prueba = df_prueba.drop(columns=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA', 'Unnamed: 40_x'], errors='ignore')
+            df_prueba.to_excel(writer, index=False, sheet_name="PDFs")
 
-        df_nacionales.to_excel(writer, index=False, sheet_name="XML")
-        df_prueba.to_excel(writer, index=False, sheet_name="PDFs")
+        # Si no se escribieron hojas, agregar una vacía para evitar el error
+        if len(writer.book.sheetnames) == 0:
+            pd.DataFrame({"Mensaje": ["No hay datos disponibles"]}).to_excel(writer, index=False, sheet_name="HojaVacia")
 
-        print("PROCESO TERMINADO CON EXITO!!")
+    print("PROCESO TERMINADO CON ÉXITO!!")
+
 
 
     progreso += 1
