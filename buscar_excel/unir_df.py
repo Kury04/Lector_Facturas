@@ -20,8 +20,8 @@ def buscar_columnas(carpeta, progress_bar):
     df_f43, df_exportaciones, df_TC, df_importaciones = extraer_columnas()
 
     df_facturas = df_facturas.drop_duplicates(subset=['Archivo'])
-    df_importaciones = df_importaciones.drop_duplicates(subset=['Unnamed: 10', 'Unnamed: 20', 'Unnamed: 30', 'CUSTODIA'])
-    df_exportaciones = df_exportaciones.drop_duplicates(subset=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'])
+    # df_importaciones = df_importaciones.drop_duplicates(subset=['Unnamed: 10', 'Unnamed: 20', 'Unnamed: 30', 'CUSTODIA'])
+    # df_exportaciones = df_exportaciones.drop_duplicates(subset=['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'])
 
     progreso += 1
     progress_bar.set(progreso / total_archivos)
@@ -29,8 +29,8 @@ def buscar_columnas(carpeta, progress_bar):
     df_f43 = limpiar_dataframe(df_f43, ["Denominacion cuenta contrapartida"])
     df_facturas = limpiar_dataframe(df_facturas, ["nombre_emisor", "Folio"])
     df_palabras = limpiar_dataframe(df_palabras, ["nombre_emisor", "Invoice"])
-    df_exportaciones = limpiar_dataframe(df_exportaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'])
-    df_importaciones = limpiar_dataframe(df_importaciones, ['Unnamed: 10', 'Unnamed: 20', 'Unnamed: 30', 'CUSTODIA'])
+    # df_exportaciones = limpiar_dataframe(df_exportaciones, ['Unnamed: 14', 'Unnamed: 25', 'CUSTODIA'])
+    # df_importaciones = limpiar_dataframe(df_importaciones, ['Unnamed: 10', 'Unnamed: 20', 'Unnamed: 30', 'CUSTODIA'])
 
     progreso += 1
     progress_bar.set(progreso / total_archivos)
@@ -38,8 +38,15 @@ def buscar_columnas(carpeta, progress_bar):
     df_palabras["Fecha"] = pd.to_datetime(df_palabras["Fecha"], dayfirst=True, errors='coerce')
     df_TC["Fecha"] = pd.to_datetime(df_TC["Fecha"], dayfirst=True, errors='coerce')
 
-    df_palabras = busqueda_secuencial(df_palabras, 'Invoice', df_importaciones, df_exportaciones, 'Unnamed: 48', 'Unnamed: 40')
-    df_facturas = busqueda_secuencial(df_facturas, 'Folio', df_importaciones, df_exportaciones, 'Unnamed: 48', 'Unnamed: 40')
+    for col in ['INGRESO', 'Unnamed: 35']:
+        if col not in df_exportaciones.columns:
+            df_exportaciones[col] = np.nan
+        if col not in df_importaciones.columns:
+            df_importaciones[col] = np.nan
+
+
+    df_palabras = busqueda_secuencial(df_palabras, 'Invoice', df_importaciones, df_exportaciones, 'Unnamed: 35', 'INGRESO')
+    df_facturas = busqueda_secuencial(df_facturas, 'Folio', df_importaciones, df_exportaciones, 'Unnamed: 35', 'INGRESO')
 
     progreso += 1
     progress_bar.set(progreso / total_archivos)

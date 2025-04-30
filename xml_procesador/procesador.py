@@ -31,6 +31,7 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None, config_file=
         print(f"Procesando archivo: {ruta_xml}")
         try:
             factura = leer_xml(ruta_xml)
+            factura["Archivo"] = ruta_xml
             datos_facturas.append(factura)
         except Exception as e:
             print(f"Error al procesar el archivo {ruta_xml}: {e}")
@@ -61,7 +62,7 @@ def procesar_documentos(carpeta,df_facturas=None, df_palabras=None, config_file=
                         if proveedor in rangos:
                             resultados = extraer_valores(ruta_txt, ruta_atributos, proveedor, rango=rangos[proveedor])
                             if resultados:
-                                resultados["Archivo"] = os.path.basename(ruta_txt)
+                                resultados["Archivo"] = ruta_pdf
                                 datos_palabras.append(resultados)
                         break
 

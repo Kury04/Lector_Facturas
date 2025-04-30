@@ -27,7 +27,7 @@ def asignar_ids(archivos_xml,carpetas_ids=None):
             continue
 
         if factura:
-            factura["Archivo"] = os.path.basename(ruta_xml)
+            factura["Archivo"] = ruta_xml
             datos_facturas.append(factura)
 
     return datos_facturas
