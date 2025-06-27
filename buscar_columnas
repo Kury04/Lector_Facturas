@@ -1,0 +1,38 @@
+import pandas as pd
+
+try:
+    expo = "C:/Users/jparedes_consultant/Downloads/files/EXPO.xlsx"
+    leer = [1, 25, 29, 31, 34, 37, 44]
+
+    libro = pd.read_excel(expo, sheet_name="EXPO", usecols=leer)
+
+    output_excel = "C:/Users/jparedes_consultant/Downloads/Libro2.xlsx"
+
+    print("DataFrame leído:")
+
+    try:
+        libro.to_excel(output_excel, index=False, engine="openpyxl")
+        print("\nArchivo guardado correctamente.")
+    except Exception as e:
+        print(f"\nError al guardar el archivo: {e}")
+except Exception as e:
+    print(f"Error: El archivo no se encontró. {e}")
+
+try:
+    impo = "C:/Users/jparedes_consultant/Downloads/files/IMPO.xlsx"
+
+    leer_impo = [1, 20, 30, 33, 37, 39, 43, 47]
+
+    libro_impo = pd.read_excel(impo, sheet_name="OPERACIONES 2025", usecols=leer_impo)
+
+    output_excel_impo = "C:/Users/jparedes_consultant/Downloads/Libro_impo.xlsx"
+    print("\nDataFrame de importaciones leído:")
+    print(libro_impo)
+
+    try:
+        libro_impo.to_excel(output_excel_impo, index=False, engine="openpyxl")
+        print("\nArchivo guardado correctamente.")
+    except Exception as e:
+        print(f"\nError al guardar el archivo: {e}")
+except Exception as e:
+    print(f"Error al leer el archivo: {e}")

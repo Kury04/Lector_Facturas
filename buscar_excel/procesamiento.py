@@ -11,7 +11,7 @@ def busqueda_secuencial(df_left, col_left, df_importaciones, df_exportaciones, c
 
     for index, row in df_left.iterrows():
         valor = row[col_left]
-        # print(f"\nBuscando el valor '{valor}' en df_importaciones y df_exportaciones...")
+        print(f"\nBuscando el valor '{valor}' en df_importaciones y df_exportaciones...")
 
         for col in df_importaciones.columns:
             match = df_importaciones[df_importaciones[col] == valor]
